@@ -32,13 +32,13 @@ class Tool(object):
             multiValue=True
         )
 
-        # params1 = arcpy.Parameter(
-        #     displayName="Input Features Class 2",
-        #     name='in_features2',
-        #     datatype="GPFeatureLayer",
-        #     parameterType="Required",
-        #     direction="Input"
-        # )
+        params1 = arcpy.Parameter(
+            displayName="Output Features Class 2",
+            name='in_features2',
+            datatype="GPFeatureLayer",
+            parameterType="Required",
+            direction="Output"
+        )
 
         # params2 = arcpy.Parameter(
         #     displayName="Input Features Class 3",
@@ -48,7 +48,7 @@ class Tool(object):
         #     direction="Input"
         # )
 
-        return [params0]
+        return [params0,params1]
 
     def isLicensed(self):
         """Set whether tool is licensed to execute."""
@@ -73,6 +73,8 @@ class Tool(object):
         arcpy.env.addOutputsToMap = True
         #Taking Input Multipatch Layers From Users
         inFeatures      = parameters[0].valueAsText
+        outFeatures      = parameters[1].valueAsText
+
         listOfInputFeatureClass = inFeatures.split(';')
         arcpy.AddMessage(listOfInputFeatureClass)
 
@@ -96,12 +98,13 @@ class Tool(object):
         arcpy.AddMessage(fcList2d)
         
 
-        # for fc in fcList2d:
-            
+        for index,fc in fcList2d:
+            #Spatial Join 
+            result = arcpy.analysis.SpatialJoin(fc, fc[index + 1], outFeatures)
+
+        return result    
 
 
-        #Spatial Join 
-        # arcpy.analysis.SpatialJoin(target_features, join_features, out_feature_class)
 
 
                   
